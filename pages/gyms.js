@@ -1,13 +1,23 @@
+import fetch from 'isomorphic-unfetch'
+import React, { Component } from 'react'
 
-export default function Gyms({data}) {
+export default class extends React.Component {
+  static async getInitialProps() {
+    const res = await fetch('http://localhost:3000/api/gym')
+    const data = await res.json()
+    console.log(data);
+    return { data }
+  }
+  render() {
     return(
-      <h1>{data}</h1>
+      <h1>yo</h1>
     )
+  }
 }
 
-export async function getServerSideProps() {
-//  const res = await fetch(`https://.../data`)
-  const data = 'heyo'//await res.json()
+/*export async function getServerSideProps() {
+  const res = await fetch(`https://localhost:3000/api/gym`)
+  const data = await res.json()
 
   return { props: { data } }
-}
+}*/
