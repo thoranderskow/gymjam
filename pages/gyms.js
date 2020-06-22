@@ -6,11 +6,12 @@ export default class extends React.Component {
     const res = await fetch('http://localhost:3000/api/gym')
     const data = await res.json()
     console.log(data);
-    return { data }
+    const newdata = JSON.stringify(data);
+    return { newdata }
   }
   render() {
     return(
-      <h1>yo</h1>
+      <h1>{this.props.newdata}</h1>
     )
   }
 }
