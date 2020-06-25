@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-unfetch'
 import React, { Component } from 'react'
+import Navbar from './components/navbar.js'
 
 function getClockTime(now){
    var hour   = now.getHours();
@@ -31,10 +32,16 @@ function Create_commentbox(props) {
           display: flex;
           justify-content: space-evenly;
           flex-direction: column;
-          margin-bottom: 5px;
+          background-color: #FFF
         }
         .flex:nth-child(odd){
           background-color: #CCC;
+        }
+        .flex:first-child {
+          border-radius: 10px 10px 0px 0px;
+        }
+        .flex:last-child {
+          border-radius: 0px 0px 10px 10px;
         }
         .comlev {
           display: flex;
@@ -48,7 +55,7 @@ function Create_commentbox(props) {
         .unemph {
           font-family: Georgia, serif;
           line-height: 150%;
-          font-size: 14pt;
+          font-size: 12pt;
           padding-left: 5%;
           padding-right: 5%;
           padding-bottom: 5%;
@@ -76,22 +83,25 @@ function Show_five(props) {
         .flex {
           display: flex;
           width: 30%;
-          outline: 2px solid black;
+          height: 500px;
         }
         .space {
-
+          overflow: auto;
+          border-radius: 10px;
         }
-
+        *::-webkit-scrollbar {
+          width: 0px;
+        }
         `}
       </style>
     </div>
   )
 }
 
-function Show_ratner() {
+function Show_gym(props) {
   return (
     <div>
-      <img src="/ratner.png" alt='ratner' />
+      <img src={props.name} alt='ratner' />
       <style jsx>{`
         img {
           width: 100%;
@@ -105,6 +115,25 @@ function Show_ratner() {
     </div>)
 }
 
+function Submit_comm(props) {
+  const time = new Date();
+  const obj = {
+          "comment": "it worked by lord almight",
+          "c_level": 5,
+          "r_avail": false,
+          "time" : time
+  }
+  const submit = async () => {
+    const res = await fetch('http://localhost:3000/api/gym', {
+      method: 'post',
+      body: JSON.stringify(obj)
+    })
+  }
+  return (
+    <button onClick={submit}>here</button>
+  )
+}
+
 export default class extends React.Component {
   static async getInitialProps() {
     const res = await fetch('http://localhost:3000/api/gym')
@@ -115,15 +144,29 @@ export default class extends React.Component {
   }
   render() {
     return(
+      <div>
+        <Navbar />
       <div className='flex'>
-        <Show_ratner />
+        <Show_gym name='/ratner.png' />
         <Show_five arr={this.props.arr}/>
+        <Submit_comm />
         <style jsx>{`
           .flex {
-            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
           }
           `}
         </style>
+        <style global jsx>{`
+          .flex {
+            display: flex;
+          }
+          body {
+            background: #ff2424;
+          }
+          `}
+        </style>
+      </div>
       </div>
     )
   }
