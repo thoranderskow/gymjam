@@ -71,7 +71,90 @@ function Create_commentbox(props) {
   );
 }
 
-function Show_five(props) {
+function Submit_button(props) {
+  const time = new Date();
+  const obj = {
+          "comment": "it worked by lord almight",
+          "c_level": 5,
+          "r_avail": false,
+          "time" : time
+  }
+  const submit = async () => {
+    const res = await fetch('http://localhost:3000/api/gym', {
+      method: 'post',
+      body: JSON.stringify(obj)
+    })
+  }
+  return (
+    <div>
+      <button onClick={submit}>submit</button>
+      <style jsx>{`
+        div {
+          width: 25%;
+        }
+        button {
+          width: 100%;
+        }
+        `}
+      </style>
+    </div>
+  )
+}
+
+function c_level_and_r_avail() {
+  return (
+    <div className='flex'>
+      <style jsx>{`
+        .flex {
+          display: flex;
+        }
+        `}
+      </style>
+    </div>
+  )
+}
+
+class Input_form extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ''};
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+  render() {
+    return (
+      <div className='separator'>
+      //TODO: c_level and r_Avail forms
+        <div className='flex'>
+          <input className='comment' type='text' value={this.state.value} onChange={this.handleChange} />
+          <Submit_button />
+          <style jsx>{`
+            .separator {
+              display: flex;
+              flex-direction: column;
+            }
+            .flex {
+              display: flex;
+              align-items: flex-end;
+            }
+            .comment {
+              margin-top: 5%;
+              margin-right: 2%;
+              width:100%;
+            }
+            `}
+          </style>
+        </div>
+      </div>
+    )
+  }
+}
+
+function Show_five_comments(props) {
   const arr = props.arr.slice(0,5);
   const comments = arr.map((obj) =>
     <Create_commentbox key={obj.id} com={obj.comment} c_level={obj.c_level} racks={obj.r_avail} time={obj.time}/>
@@ -79,11 +162,13 @@ function Show_five(props) {
   return (
     <div className='flex'>
       <div className='space'>{comments}</div>
+      <div><Input_form /></div>
       <style jsx>{`
         .flex {
           display: flex;
           width: 30%;
-          height: 500px;
+          height: 400px;
+          flex-direction: column;
         }
         .space {
           overflow: auto;
@@ -115,25 +200,6 @@ function Show_gym(props) {
     </div>)
 }
 
-function Submit_comm(props) {
-  const time = new Date();
-  const obj = {
-          "comment": "it worked by lord almight",
-          "c_level": 5,
-          "r_avail": false,
-          "time" : time
-  }
-  const submit = async () => {
-    const res = await fetch('http://localhost:3000/api/gym', {
-      method: 'post',
-      body: JSON.stringify(obj)
-    })
-  }
-  return (
-    <button onClick={submit}>here</button>
-  )
-}
-
 export default class extends React.Component {
   static async getInitialProps() {
     const res = await fetch('http://localhost:3000/api/gym')
@@ -148,8 +214,7 @@ export default class extends React.Component {
         <Navbar />
       <div className='flex'>
         <Show_gym name='/ratner.png' />
-        <Show_five arr={this.props.arr}/>
-        <Submit_comm />
+        <Show_five_comments arr={this.props.arr}/>
         <style jsx>{`
           .flex {
             align-items: center;

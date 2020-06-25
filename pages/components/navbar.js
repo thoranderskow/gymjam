@@ -14,7 +14,7 @@ export default class extends React.Component {
             display: flex;
             justify-content: space-evenly;
             align-items: center;
-            margin-bottom: 5%;
+            margin-bottom: 2%;
           }
           a.title {
             font-size: 2em;
