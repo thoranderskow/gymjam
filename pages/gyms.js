@@ -71,35 +71,38 @@ function Create_commentbox(props) {
   );
 }
 
-function Submit_button(props) {
-  const time = new Date();
-  const obj = {
-          "comment": "it worked by lord almight",
-          "c_level": 5,
-          "r_avail": false,
-          "time" : time
-  }
-  const submit = async () => {
-    const res = await fetch('http://localhost:3000/api/gym', {
-      method: 'post',
-      body: JSON.stringify(obj)
-    })
-  }
-  return (
-    <div>
-      <button onClick={submit}>submit</button>
-      <style jsx>{`
-        div {
-          width: 25%;
-        }
-        button {
-          width: 100%;
-        }
-        `}
-      </style>
-    </div>
-  )
-}
+class Submit_button extends React.Component {
+  render() {
+    const time = new Date();
+    const obj = {
+      "comment": "TODOROKI",
+      "c_level": 5,
+      "r_avail": false,
+      "time" : time
+    }
+    const submit = async () => {
+      const res = await fetch('http://localhost:3000/api/gym', {
+        method: 'post',
+        body: JSON.stringify(obj)
+      })
+      this.props.func(obj);
+    }
+    return (
+      <div>
+        <button onClick={submit}>submit</button>
+        <style jsx>{`
+          div {
+            width: 25%;
+          }
+          button {
+            width: 100%;
+          }
+          `}
+          </style>
+          </div>
+        )
+      }
+    }
 
 function c_level_and_r_avail() {
   return (
@@ -131,7 +134,7 @@ class Input_form extends React.Component {
       //TODO: c_level and r_Avail forms
         <div className='flex'>
           <input className='comment' type='text' value={this.state.value} onChange={this.handleChange} />
-          <Submit_button />
+          <Submit_button func={this.props.func}/>
           <style jsx>{`
             .separator {
               display: flex;
@@ -162,7 +165,7 @@ function Show_five_comments(props) {
   return (
     <div className='flex'>
       <div className='space'>{comments}</div>
-      <div><Input_form /></div>
+      <div><Input_form func={props.func}/></div>
       <style jsx>{`
         .flex {
           display: flex;
@@ -208,13 +211,27 @@ export default class extends React.Component {
     const arr = data.comments.reverse();
     return { arr }
   }
+  constructor(props) {
+    super(props);
+    this.state = {comms: this.props.arr};
+  }
+  refreshcomments = (newcomm) => {
+    this.getInitialProps;
+    var oldarr = this.props.arr;
+    oldarr.unshift(newcomm);
+    this.setState({comms: oldarr});
+  }
   render() {
+    const submit = () => {
+      var new_arr = this.state.comms.slice(1, 3);
+      this.setState({comms: new_arr});
+    }
     return(
       <div>
         <Navbar />
       <div className='flex'>
         <Show_gym name='/ratner.png' />
-        <Show_five_comments arr={this.props.arr}/>
+        <Show_five_comments arr={this.state.comms} func={this.refreshcomments}/>
         <style jsx>{`
           .flex {
             align-items: center;
