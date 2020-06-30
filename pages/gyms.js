@@ -104,12 +104,16 @@ class Submit_button extends React.Component {
       }
     }
 
-function c_level_and_r_avail() {
+function C_level_button(props) {
+  const submit = () => {
+    props.clevel(props.num);
+  }
   return (
-    <div className='flex'>
+    <div>
+      <button onClick={submit}>{props.num}</button>
       <style jsx>{`
-        .flex {
-          display: flex;
+        button {
+          border-radius: 10px;
         }
         `}
       </style>
@@ -117,21 +121,94 @@ function c_level_and_r_avail() {
   )
 }
 
+class C_level_buttons extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state =
+    {
+      bool: true
+    };
+  }
+  render() {
+    const submit = () => {
+      if (this.state.bool) {
+        this.setState({bool: false});
+        this.props.ravail(false);
+      } else {
+        this.setState({bool: true});
+        this.props.ravail(true);
+      }
+    }
+    return(
+      <div className='whole'>
+        <div className='vert'>
+          How Crowded?
+          <div className='flex'>
+            <C_level_button num={1} clevel={this.props.clevel} />
+            <C_level_button num={2} clevel={this.props.clevel} />
+            <C_level_button num={3} clevel={this.props.clevel} />
+            <C_level_button num={4} clevel={this.props.clevel} />
+            <C_level_button num={5} clevel={this.props.clevel} />
+          </div>
+        </div>
+        <div className='vert'>
+          Racks Available?
+          <button onClick={submit}>{this.state.bool.toString()}</button>
+        </div>
+          <style jsx>{`
+            .whole {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+            }
+            .vert {
+              display: flex;
+              flex-direction: column;
+            }
+            .flex {
+              display: flex;
+            }
+            button {
+              border-radius: 10px;
+              width: 30%;
+              align-self: center;
+            }
+            `}
+          </style>
+        </div>
+      )
+    }
+  }
+
 class Input_form extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {value: ''};
-
+    this.state =
+    {
+      value: '',
+      c_level: 0,
+      r_avail: true
+    };
     this.handleChange = this.handleChange.bind(this);
+    this.set_c_level = this.set_c_level.bind(this);
+    this.set_r_avail = this.set_r_avail.bind(this);
   }
 
   handleChange(event) {
     this.setState({value: event.target.value});
   }
+  set_c_level(num) {
+    this.setState({c_level: num});
+  }
+  set_r_avail(bool) {
+    this.setState({r_avail: bool});
+  }
   render() {
     return (
       <div className='separator'>
-      //TODO: c_level and r_Avail forms
+        <div>
+          <C_level_buttons clevel={this.set_c_level} ravail={this.set_r_avail}/>
+        </div>
         <div className='flex'>
           <input className='comment' type='text' value={this.state.value} onChange={this.handleChange} />
           <Submit_button func={this.props.func}/>
@@ -145,7 +222,6 @@ class Input_form extends React.Component {
               align-items: flex-end;
             }
             .comment {
-              margin-top: 5%;
               margin-right: 2%;
               width:100%;
             }
@@ -170,7 +246,7 @@ function Show_five_comments(props) {
         .flex {
           display: flex;
           width: 30%;
-          height: 400px;
+          height: 450px;
           flex-direction: column;
         }
         .space {
@@ -222,10 +298,6 @@ export default class extends React.Component {
     this.setState({comms: oldarr});
   }
   render() {
-    const submit = () => {
-      var new_arr = this.state.comms.slice(1, 3);
-      this.setState({comms: new_arr});
-    }
     return(
       <div>
         <Navbar />
