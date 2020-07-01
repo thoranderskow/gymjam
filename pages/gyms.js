@@ -75,9 +75,9 @@ class Submit_button extends React.Component {
   render() {
     const time = new Date();
     const obj = {
-      "comment": "TODOROKI",
-      "c_level": 5,
-      "r_avail": false,
+      "comment": this.props.com,
+      "c_level": this.props.clevel,
+      "r_avail": this.props.ravail,
       "time" : time
     }
     const submit = async () => {
@@ -87,9 +87,13 @@ class Submit_button extends React.Component {
       })
       this.props.func(obj);
     }
+    const enter = () => {
+      this.props.reset('');
+      submit();
+    }
     return (
       <div>
-        <button onClick={submit}>submit</button>
+        <button onClick={enter}>submit</button>
         <style jsx>{`
           div {
             width: 25%;
@@ -104,21 +108,46 @@ class Submit_button extends React.Component {
       }
     }
 
-function C_level_button(props) {
-  const submit = () => {
-    props.clevel(props.num);
+class C_level_button extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      style: {}
+    }
   }
-  return (
-    <div>
-      <button onClick={submit}>{props.num}</button>
-      <style jsx>{`
-        button {
-          border-radius: 10px;
-        }
-        `}
-      </style>
-    </div>
-  )
+  componentDidUpdate(prev) {
+    if (this.props.arr !== prev.arr) {
+      const blank = {backgroundColor: 'white'};
+      const active = {backgroundColor: '#ffa238'};
+      var flag = false;
+      this.props.arr.map(x => (x == this.props.num ? flag = true : console.log('none')));
+      if (flag) {
+        this.setState({style: blank});
+      } else {
+        this.setState({style: active});
+      }
+    }
+  }
+  render () {
+    const submit = () => {
+      this.props.clevel(this.props.num);
+      this.props.func(this.props.num);
+    }
+    return (
+      <div>
+        <button style={this.state.style} onClick={submit}>{this.props.num}</button>
+        <style jsx>{`
+          button {
+            border-radius: 10px;
+          }
+          button:focus {
+            outline: none;
+          }
+          `}
+        </style>
+      </div>
+    )
+  }
 }
 
 class C_level_buttons extends React.Component {
@@ -126,16 +155,37 @@ class C_level_buttons extends React.Component {
     super(props);
     this.state =
     {
-      bool: true
+      bool: true,
+      bs: this.props.arr,
+      t_f_style: {backgroundColor: 'green'}
     };
+    this.b = this.b.bind(this);
+  }
+  componentDidUpdate(prev) {
+    if (prev.arr !== this.props.arr) {
+      this.setState({bs: this.props.arr});
+    }
+  }
+  b (num) {
+    var arr = [1,2,3,4,5];
+    delete arr[num-1];
+    this.setState({
+      bs: arr,
+    });
   }
   render() {
     const submit = () => {
       if (this.state.bool) {
-        this.setState({bool: false});
+        this.setState({
+          bool: false,
+          t_f_style: {backgroundColor: 'red'}
+        });
         this.props.ravail(false);
       } else {
-        this.setState({bool: true});
+        this.setState({
+          bool: true,
+          t_f_style: {backgroundColor: 'green'}
+        });
         this.props.ravail(true);
       }
     }
@@ -144,16 +194,16 @@ class C_level_buttons extends React.Component {
         <div className='vert'>
           How Crowded?
           <div className='flex'>
-            <C_level_button num={1} clevel={this.props.clevel} />
-            <C_level_button num={2} clevel={this.props.clevel} />
-            <C_level_button num={3} clevel={this.props.clevel} />
-            <C_level_button num={4} clevel={this.props.clevel} />
-            <C_level_button num={5} clevel={this.props.clevel} />
+            <C_level_button arr={this.state.bs} func={this.b} num={1} clevel={this.props.clevel} />
+            <C_level_button arr={this.state.bs} func={this.b} num={2} clevel={this.props.clevel} />
+            <C_level_button arr={this.state.bs} func={this.b} num={3} clevel={this.props.clevel} />
+            <C_level_button arr={this.state.bs} func={this.b} num={4} clevel={this.props.clevel} />
+            <C_level_button arr={this.state.bs} func={this.b} num={5} clevel={this.props.clevel} />
           </div>
         </div>
         <div className='vert'>
           Racks Available?
-          <button onClick={submit}>{this.state.bool.toString()}</button>
+          <button style={this.state.t_f_style} onClick={submit} type='submit'>{this.state.bool.toString()}</button>
         </div>
           <style jsx>{`
             .whole {
@@ -173,6 +223,9 @@ class C_level_buttons extends React.Component {
               width: 30%;
               align-self: center;
             }
+            button:focus {
+              outline: none;
+            }
             `}
           </style>
         </div>
@@ -187,14 +240,23 @@ class Input_form extends React.Component {
     {
       value: '',
       c_level: 0,
-      r_avail: true
+      r_avail: true,
+      button_arr: [1,2,3,4,5]
     };
     this.handleChange = this.handleChange.bind(this);
     this.set_c_level = this.set_c_level.bind(this);
     this.set_r_avail = this.set_r_avail.bind(this);
+    this.reset1 = this.reset1.bind(this);
   }
-
+  reset1(str) {
+    console.log('here');
+    this.setState((state) => ({
+      value: str,
+      button_arr: [1,2,3,4,5]
+    }));
+  }
   handleChange(event) {
+    event.preventDefault();
     this.setState({value: event.target.value});
   }
   set_c_level(num) {
@@ -207,11 +269,11 @@ class Input_form extends React.Component {
     return (
       <div className='separator'>
         <div>
-          <C_level_buttons clevel={this.set_c_level} ravail={this.set_r_avail}/>
+          <C_level_buttons arr={this.state.button_arr} clevel={this.set_c_level} ravail={this.set_r_avail}/>
         </div>
         <div className='flex'>
-          <input className='comment' type='text' value={this.state.value} onChange={this.handleChange} />
-          <Submit_button func={this.props.func}/>
+          <input className='comment' type='text' value={this.state.value} onChange={this.handleChange} placeHolder='enter comment'/>
+          <Submit_button reset={this.reset1} handle={this.handleChange} func={this.props.func} com={this.state.value} clevel={this.state.c_level} ravail={this.state.r_avail}/>
           <style jsx>{`
             .separator {
               display: flex;
@@ -240,18 +302,37 @@ function Show_five_comments(props) {
   );
   return (
     <div className='flex'>
+    <div className='separator'>Comments</div>
       <div className='space'>{comments}</div>
-      <div><Input_form func={props.func}/></div>
+      <div className='form'><Input_form func={props.func}/></div>
       <style jsx>{`
+        .separator {
+          margin-bottom: 3%;
+          font-family: Impact, Charcoal, sans-serif;
+          font-size: 2em;
+          color: white;
+          text-shadow: 2px 2px #000000;
+        }
+        .form {
+          margin-top: 5%;
+          background-color: #ffc738;
+          padding: 3%;
+          border-radius: 5px;
+          box-shadow: 0 0 3pt 2pt gray;
+        }
         .flex {
           display: flex;
           width: 30%;
-          height: 450px;
+          height: 550px;
           flex-direction: column;
+          background-color: #ffbb00;
+          padding: 0.5% 2% 2% 2%;
+          border-radius: 10px;
         }
         .space {
           overflow: auto;
           border-radius: 10px;
+          box-shadow: 0 0 3pt 2pt gray;
         }
         *::-webkit-scrollbar {
           width: 0px;
@@ -325,10 +406,3 @@ export default class extends React.Component {
     )
   }
 }
-
-/*export async function getServerSideProps() {
-  const res = await fetch(`https://localhost:3000/api/gym`)
-  const data = await res.json()
-
-  return { props: { data } }
-}*/
