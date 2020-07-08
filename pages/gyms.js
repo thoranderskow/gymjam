@@ -56,7 +56,7 @@ function Create_commentbox(props) {
         .unemph {
           font-family: Georgia, serif;
           line-height: 150%;
-          font-size: 12pt;
+          font-size: 14pt;
           padding-left: 5%;
           padding-right: 5%;
           padding-bottom: 5%;
@@ -205,6 +205,14 @@ class C_level_buttons extends React.Component {
   componentDidUpdate(prev) {
     if (prev.arr !== this.props.arr) {
       this.setState({bs: this.props.arr});
+      this.setState({
+        t_f_style: {
+          backgroundColor: 'green',
+          color: 'white',
+          width: '100%'
+        },
+        bool: true
+      })
     }
   }
   b (num) {
@@ -315,7 +323,9 @@ class Input_form extends React.Component {
     console.log('here');
     this.setState((state) => ({
       value: str,
-      button_arr: [1,2,3,4,5]
+      button_arr: [1,2,3,4,5],
+      r_avail: true,
+      c_level: 0
     }));
   }
   handleChange(event) {
@@ -391,10 +401,10 @@ function Show_five_comments(props) {
   );
   return (
     <div className='flex'>
-    <div className='separator'>Comments</div>
+    <div className='separator'>5 Latest Comments ({props.gymname})</div>
       <div className='space'>{comments}</div>
       <div className='form'><Input_form gymname={props.gymname} func={props.func}/></div>
-      <div className='link'><Link href='./'><a className='title'>Show all comments</a></Link></div>
+      <div className='link'><Link href={'./'.concat(props.gymname).concat('_comments')}><a className='title'>Show all comments</a></Link></div>
       <style jsx>{`
         .link {
           align-self: flex-end;
@@ -419,8 +429,8 @@ function Show_five_comments(props) {
         }
         .flex {
           display: flex;
-          width: 30%;
-          height: 550px;
+          width: 40%;
+          height: 600px;
           flex-direction: column;
           background-color: #ffbb00;
           padding: 0.5% 2% 1% 2%;
@@ -480,6 +490,7 @@ export default class extends React.Component {
     const arr = data.comments.reverse();
     return { arr }
   }
+
   refreshcomments = (newcomm, gym) => {
     var oldarr = this.state.comms;
     oldarr.unshift(newcomm);
@@ -515,7 +526,7 @@ export default class extends React.Component {
             .flex {
               flex-direction: column;
               align-items: center;
-              margin-top: 10vh;
+              margin-top: 2%;
             }
             `}
           </style>

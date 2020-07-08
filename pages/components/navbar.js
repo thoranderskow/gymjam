@@ -7,12 +7,23 @@ export default class extends React.Component {
     return(
       <div>
       <navbar className='flex'>
-        <Link href='./'><a className='title'>About</a></Link>
-        <div className='title'>GYMJAM</div>
-        <Link href='./'><a className='title'>Contact</a></Link>
+        <Link href='./about'><a className='title'>About</a></Link>
+        <Link href='./gyms'><a><div className='title'>GYMJAM</div></a></Link>
+        <a className='title'>Contact</a>
       </navbar>
       <div className='underline'></div>
       <style jsx>{`
+        button {
+          background-color: #ff2424;
+          border: 0;
+          padding: 0;
+        }
+        button:focus {
+          outline: none;
+        }
+        a {
+          text-decoration: none;
+        }
         .flex {
           display: flex;
           justify-content: space-evenly;
