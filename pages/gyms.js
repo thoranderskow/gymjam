@@ -118,7 +118,7 @@ class Submit_button extends React.Component {
       this.props.reset('');
       this.props.error('');
       var gym = this.state.gym
-      const res = await fetch('https://gymjam.herokuapp.com/api/'.concat(gym), {
+      const res = await fetch(process.env.VERCEL_URL.concat('/api/').concat(gym), {
         method: 'post',
         body: JSON.stringify(obj)
       })
@@ -484,7 +484,7 @@ export default class extends React.Component {
     };
   }
   static async getInitialProps(obj) {
-    const res = await fetch('https://gymjam.herokuapp.com/api/ratner')
+    const res = await fetch(process.env.VERCEL_URL.concat('/api/ratner'))
     const data = await res.json()
     //array is reversed for most recent to show up
     const arr = data.comments.reverse();
@@ -499,7 +499,7 @@ export default class extends React.Component {
   }
 
   async fetchgym(gymname) {
-    const res = await fetch('https://gymjam.herokuapp.com/api/'.concat(gymname))
+    const res = await fetch(process.env.VERCEL_URL.concat('/api/').concat(gymname))
     const data = await res.json()
     //array is reversed for most recent to show up
     const arr = data.comments.reverse();
