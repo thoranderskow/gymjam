@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-unfetch'
 import React, { Component } from 'react'
 import Navbar from './components/navbar.js'
+import Link from 'next/link'
 
 function getClockTime(now){
    var hour   = now.getHours();
@@ -73,6 +74,19 @@ function Create_commentbox(props) {
 }
 
 class Submit_button extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state =
+    {
+      gym: this.props.gymname
+    }
+  }
+
+  componentDidUpdate(prev) {
+    if (this.props.gymname !== prev.gymname) {
+      this.setState({gym: this.props.gymname});
+    }
+  }
   render() {
     const err_handle = (val) => {
       if (val === '') {
@@ -90,6 +104,7 @@ class Submit_button extends React.Component {
       "r_avail": this.props.ravail,
       "time" : time
     }
+
     const submit = async () => {
       const err1 = err_handle(this.props.com);
       const err2 = err_handle(this.props.clevel);
@@ -102,12 +117,14 @@ class Submit_button extends React.Component {
       }
       this.props.reset('');
       this.props.error('');
-      const res = await fetch('http://localhost:3000/api/gym', {
+      var gym = this.state.gym
+      const res = await fetch('http://localhost:3000/api/'.concat(gym), {
         method: 'post',
         body: JSON.stringify(obj)
       })
-      this.props.func(obj);
+      this.props.func(obj, gym);
     }
+
     const enter = () => {
       submit();
     }
@@ -334,7 +351,7 @@ class Input_form extends React.Component {
           <div className='input_overflow'>
             <textarea id='input_text' maxlength='500' rows={this.state.rows} className='comment' type='text' value={this.state.value} onChange={this.handleChange} placeHolder='enter comment'/>
           </div>
-          <Submit_button error={this.set_err_str} reset={this.reset1} handle={this.handleChange} func={this.props.func} com={this.state.value} clevel={this.state.c_level} ravail={this.state.r_avail}/>
+          <Submit_button gymname={this.props.gymname} error={this.set_err_str} reset={this.reset1} handle={this.handleChange} func={this.props.func} com={this.state.value} clevel={this.state.c_level} ravail={this.state.r_avail}/>
           <style jsx>{`
             .input_overflow {
               width: 100%;
@@ -353,7 +370,6 @@ class Input_form extends React.Component {
               margin-right: 2%;
               width: 100%;
               resize: none;
-
               max-height: 10vh;
             }
             .comment:focus {
@@ -377,8 +393,16 @@ function Show_five_comments(props) {
     <div className='flex'>
     <div className='separator'>Comments</div>
       <div className='space'>{comments}</div>
-      <div className='form'><Input_form func={props.func}/></div>
+      <div className='form'><Input_form gymname={props.gymname} func={props.func}/></div>
+      <div className='link'><Link href='./'><a className='title'>Show all comments</a></Link></div>
       <style jsx>{`
+        .link {
+          align-self: flex-end;
+          padding-top: 2%;
+        }
+        a:hover {
+          color: #ff2424;
+        }
         .separator {
           margin-bottom: 3%;
           font-family: Impact, Charcoal, sans-serif;
@@ -399,8 +423,9 @@ function Show_five_comments(props) {
           height: 550px;
           flex-direction: column;
           background-color: #ffbb00;
-          padding: 0.5% 2% 2% 2%;
+          padding: 0.5% 2% 1% 2%;
           border-radius: 10px;
+          margin-bottom: 10%;
         }
         .space {
           overflow: auto;
@@ -409,6 +434,13 @@ function Show_five_comments(props) {
         }
         *::-webkit-scrollbar {
           width: 0px;
+        }
+        .title {
+          font-size: 1em;
+          text-decoration: none;
+          font-family: Charcoal, sans-serif;
+          color: white;
+          text-shadow: 1px 1px #000000;
         }
         `}
       </style>
@@ -434,47 +466,69 @@ function Show_gym(props) {
 }
 
 export default class extends React.Component {
-  static async getInitialProps() {
-    const res = await fetch('http://localhost:3000/api/gym')
+  constructor(props) {
+    super(props);
+    this.state = {
+      comms: this.props.arr,
+      gym: 'ratner'
+    };
+  }
+  static async getInitialProps(obj) {
+    const res = await fetch('http://localhost:3000/api/ratner')
     const data = await res.json()
     //array is reversed for most recent to show up
     const arr = data.comments.reverse();
     return { arr }
   }
-  constructor(props) {
-    super(props);
-    this.state = {comms: this.props.arr};
-  }
-  refreshcomments = (newcomm) => {
-    this.getInitialProps;
-    var oldarr = this.props.arr;
+  refreshcomments = (newcomm, gym) => {
+    var oldarr = this.state.comms;
     oldarr.unshift(newcomm);
+    this.setState({gym: gym});
     this.setState({comms: oldarr});
+  }
+
+  async fetchgym(gymname) {
+    const res = await fetch('http://localhost:3000/api/'.concat(gymname))
+    const data = await res.json()
+    //array is reversed for most recent to show up
+    const arr = data.comments.reverse();
+    this.setState({comms: arr});
+    this.setState({gym: gymname});
+  }
+
+  change = (event) => {
+    this.fetchgym(event.target.value);
   }
   render() {
     return(
       <div>
         <Navbar />
-      <div className='flex'>
-        <Show_gym name='/ratner.png' />
-        <Show_five_comments arr={this.state.comms} func={this.refreshcomments}/>
-        <style jsx>{`
-          .flex {
-            align-items: center;
-            justify-content: space-evenly;
-          }
-          `}
-        </style>
-        <style global jsx>{`
-          .flex {
-            display: flex;
-          }
-          body {
-            background: #ff2424;
-          }
-          `}
-        </style>
-      </div>
+        <div className='flex'>
+          <div>
+            <select onChange={this.change} value={this.state.gym}>
+              <option value="ratner">Ratner</option>
+              <option value="crown">Crown</option>
+            </select>
+          </div>
+          <Show_five_comments gymname={this.state.gym} arr={this.state.comms} func={this.refreshcomments}/>
+          <style jsx>{`
+            .flex {
+              flex-direction: column;
+              align-items: center;
+              margin-top: 10vh;
+            }
+            `}
+          </style>
+          <style global jsx>{`
+            .flex {
+              display: flex;
+            }
+            body {
+              background: #ff2424;
+            }
+            `}
+          </style>
+        </div>
       </div>
     )
   }
