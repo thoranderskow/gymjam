@@ -1,30 +1,5 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+A web app created with Nextjs and MongoDB. A forum dedicated to showing how crowded Ratner or Crown, the two gyms on UChicago campus, currently are.
+<img width="1440" alt="Screen Shot 2020-09-10 at 4 10 52 PM" src="https://user-images.githubusercontent.com/41391604/92821947-799e4380-f380-11ea-9a35-96584ddbcff3.png">
+<img width="1440" alt="Screen Shot 2020-09-10 at 4 11 01 PM" src="https://user-images.githubusercontent.com/41391604/92821955-7c009d80-f380-11ea-90d6-4bc8655af811.png">
+<img width="1440" alt="Screen Shot 2020-09-10 at 4 11 10 PM" src="https://user-images.githubusercontent.com/41391604/92821963-7e62f780-f380-11ea-9bfe-19817da95d11.png">
+<img width="1440" alt="Screen Shot 2020-09-10 at 4 11 26 PM" src="https://user-images.githubusercontent.com/41391604/92821971-80c55180-f380-11ea-9910-632ab57cf32c.png">
